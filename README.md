@@ -5,7 +5,7 @@ Currently supports exporting expenses from groups. Default export includes date,
 
 ## Quickstart
 - Make sure you have Python 3 and the splitwise and pandas libraries installed. I recommend using [Anaconda](https://www.anaconda.com/distribution/#download-section).
-`pip install splitwise pandas`
+`pip install splitwise pandas wget`
 
 - Download splitwise_export.py from this repository
 
