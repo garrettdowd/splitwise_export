@@ -1,7 +1,23 @@
 from splitwise import Splitwise
 import pandas as pd
+import numpy as np
 import json
 import os
+import wget
+
+class cd:
+    """Context manager for changing the current working directory"""
+    def __init__(self, new_path, create_dir = False):
+        self.new_path = os.path.expanduser(new_path)
+        if not os.path.isdir(self.new_path) and create_dir:
+            os.mkdir(self.new_path)
+
+    def __enter__(self):
+        self.saved_path = os.getcwd()
+        os.chdir(self.new_path)
+
+    def __exit__(self, etype, value, traceback):
+        os.chdir(self.saved_path)
 
 def yes_or_no(question, default = None):
     while "the answer is invalid":
@@ -85,7 +101,19 @@ def get_user_name(user):
     else:
         return None
 
-def expenses_to_csv(expenses, filepath = None, include_deleted = None):
+def download_receipt(url, folder = None):
+    if folder == None:
+        folder = os.getcwd()
+    try:
+        with cd(folder, True):
+            wget.download(url)
+    except:
+        pass
+    else:
+        pass
+        
+
+def expenses_to_csv(expenses, filepath = None, include_deleted = None, download_receipts = None):
 
     if filepath == None:
         filepath = input("Enter filename. Leave blank for default. File will be saved in current directory\n")
@@ -93,7 +121,13 @@ def expenses_to_csv(expenses, filepath = None, include_deleted = None):
             filepath = 'data_export.csv'
 
     if include_deleted == None:
-        include_deleted = yes_or_no("Include deleted expenses?", False)
+        include_deleted = yes_or_no("Include deleted expenses?\n", False)
+
+    if download_receipts == None:
+        download_receipts = yes_or_no("Download all receipts to a folder in the current directory?\n", False)
+        image_path = input("Enter folder name or path for images. Leave blank for default (./images/).\n")
+        if not image_path:
+            image_path = 'images'
 
     # column_order = []
     df = []
@@ -105,12 +139,15 @@ def expenses_to_csv(expenses, filepath = None, include_deleted = None):
             'Details' : expense.getDetails(),
             'Cost': expense.getCost(),
             'Currency': expense.getCurrencyCode(),
-            'Receipt': expense.getReceipt().getOriginal(),
+            'Receipt': str(expense.getReceipt().getOriginal()),
             'Deleted': expense.getDeletedBy(),
         }
         df.append(df_d)
 
     df = pd.DataFrame(df)
+
+    if download_receipts:
+        df.apply(lambda row: download_receipt(row['Receipt'], image_path), axis=1)
 
     if include_deleted:
         df['Deleted'] = df.apply(lambda row: get_user_name(row['Deleted']), axis=1)
