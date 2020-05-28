@@ -1,7 +1,11 @@
 # splitwise_export
 Python script to export more data from Splitwise **including receipts**. 
 
-Currently supports exporting expenses from groups. Default export includes date, category, description, details (notes), cost, currency, and receipt link. Receipts can also be downloaded into a local folder. Additionally, if you choose to include deleted expenses then there will be an additional column that specifies the user that deleted the expense.
+Currently supports exporting expenses from groups. Default export includes; 
+| Category | Cost | Currency | Date | [Deleted by] | Description | Details (notes) | Receipt Link |
+|----------|------|----------|------|--------------|-------------|-----------------|--------------|
+
+Receipts can also be downloaded into a local folder. Additionally, if you choose to include deleted expenses then there will be an additional column that specifies the user that deleted the expense.
 
 ## Quickstart
 - Make sure you have Python 3 and the splitwise and pandas libraries installed. I recommend using [Anaconda](https://www.anaconda.com/distribution/#download-section).
