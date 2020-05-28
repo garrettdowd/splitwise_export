@@ -115,7 +115,7 @@ def download_receipt(url, folder = None):
 def expenses_to_csv(expenses, filepath = None, include_deleted = None, download_receipts = None):
 
     if filepath == None:
-        filepath = input("Enter filename. Leave blank for default. File will be saved in current directory\n")
+        filepath = input("Enter filename (with .csv extension). Leave blank for default (data_export.csv). File will be saved in current directory\n")
         if not filepath:
             filepath = 'data_export.csv'
 
@@ -124,9 +124,10 @@ def expenses_to_csv(expenses, filepath = None, include_deleted = None, download_
 
     if download_receipts == None:
         download_receipts = yes_or_no("Download all receipts to a folder in the current directory?\n", False)
-        image_path = input("Enter folder name or path for images. Leave blank for default (./images/).\n")
-        if not image_path:
-            image_path = 'images'
+        if download_receipts:
+            image_path = input("Enter folder name or path for images. Leave blank for default (./images/).\n")
+            if not image_path:
+                image_path = 'images'
 
     # column_order = []
     df = []
